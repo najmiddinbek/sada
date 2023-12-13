@@ -5,6 +5,6 @@ const PhotoSchema = new Schema({
     secure_url: String,
 }, { timestamps: true })
 
-const Photo = models.photos || model('photos', PhotoSchema)
+const Photo = models.photos || models('photos', PhotoSchema)
 
 export default Photo
