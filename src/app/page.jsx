@@ -11,7 +11,7 @@ export default async function page() {
 
   return (
     <>
-      <h1>Next js da rasm yuklash</h1>
+      <h1>Next js da rasm yuklash Developer </h1>
       <UploadForm />
 
       <h1>Barcha rasmlar</h1>
