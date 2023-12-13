@@ -39,9 +39,16 @@ async function savePhotosToLocal(formData) {
 }
 
 async function uploadPhotosToCloudinary(newFiles) {
-    const multiplePhotosPromise = newFiles.map(file => (
-        cloudinary.v2.uploader.upload(file.filepath, { folder: 'nextjs_upload' })
-    ))
+    const multiplePhotosPromise = newFiles.map(async (file) => {
+        try {
+            const result = await cloudinary.v2.uploader.upload(file.filepath, { folder: 'nextjs_upload' });
+            console.log(result); // Cloudinary API javobi
+            return result;
+        } catch (error) {
+            throw new Error(`Error uploading file to Cloudinary: ${error.message}`);
+        }
+    });
+
 
     return await Promise.all(multiplePhotosPromise)
 }
@@ -59,12 +66,16 @@ export async function uploadPhoto(formData) {
         newFiles.map(file => fs.unlink(file.filepath))
 
         // await delay(2000)
+        // delay(2000)
+        await delay(2000);
+
 
 
         const newPhotos = photos.map(photo => {
-            const newPhoto = new Photo({ public_id: photo.public_id, secure_url: photo.secure_url })
-            return newPhoto
-        })
+            const newPhoto = new Photo({ public_id: photo.public_id, secure_url: photo.secure_url });
+            return newPhoto;
+        });
+
 
         await Photo.insertMany(newPhotos)
 
@@ -97,19 +108,24 @@ export async function getAllPhotos() {
 
 export async function deletePhoto(public_id) {
     try {
+        // Agar Photo modelida faylni o'chirish uchun oid aniqlangan bo'lsa
+        const deletedPhotos = await Photo.find({ public_id });
 
-        await Promise.all([
-            Photo.findOneAndDelete({ public_id }),
-            cloudinary.v2.uploader.destroy(public_id)
-        ])
+        await Promise.all(deletedPhotos.map(async (photo) => {
+            await fs.unlink(photo.filepath);
+            await cloudinary.v2.uploader.destroy(public_id);
+            // Photo modelidan o'chirish ham bajariladi
+            await photo.remove();
+        }));
 
-        revalidatePath("/")
+        revalidatePath("/");
         return { msg: 'rasm muvaffaqiyatli o`chirildi' };
 
     } catch (error) {
         return { errorMessage: error.message };
     }
 }
+
 
 export async function revalidate(path) {
     revalidatePath(path)
