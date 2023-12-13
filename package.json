@@ -1,0 +1,27 @@
+{
+  "name": "my-next-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "cloudinary": "^1.41.0",
+    "daisyui": "^4.4.19",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.0.3",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hook-form": "^7.49.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.6"
+  }
+}
